@@ -1,0 +1,16 @@
+%dl
+  %dt Build
+    %dd
+      %a{href: "https://api.tddium.com/reports/#{session}"} ##{session}
+  %dt
+    %dd Commit
+      %a{href: "https://github.com/#{[org, repo].compact.join('/')}/commit/#{commit}"}= commit
+%p
+  \--
+  %br
+  %small
+    This email triggered by a webhook with the folling payload:
+    %pre= payload
+
+
+
