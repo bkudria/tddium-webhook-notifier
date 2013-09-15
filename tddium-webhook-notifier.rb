@@ -37,7 +37,7 @@ post '/' do
 
   cache   = settings.cache
   payload = OpenStruct.new(payload_hash)
-  debug "Received request with payload:\n\n#{payload.to_yaml}"
+  debug "Received request with payload:\n\n#{payload_hash.to_yaml}"
 
   debug "Not a 'test' event, doing nothing."
   return 200 unless payload.event == 'test'
