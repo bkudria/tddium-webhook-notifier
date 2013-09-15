@@ -42,24 +42,25 @@ post '/' do
     end
 
     cache.set(hook_key)
-    return 200
   end
 
-  def send_notification!(payload)
-    build_name   = "#{payload.repository['name']}/#{payload.branch}"
-    fail_count   = payload.counts['failed'].to_i
-    build_status = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}", error: 'failing with an error!'}[payload.status.to_sym]
-    Pony.mail(
-      subject:   "[tddium] #{build_name} is now #{build_status}.",
-      html_body: haml(:email,
-                      format: :html5,
-                      locals: {
-                        session:  payload.session,
-                        commit:   payload.commit_id,
-                        org:      payload.repository['org_name'],
-                        repo:     payload.repository['name'],
-                        payload:  payload_hash.to_yaml
-                      })
-    )
-  end
+  return 200
+end
+
+def send_notification!(payload)
+  build_name   = "#{payload.repository['name']}/#{payload.branch}"
+  fail_count   = payload.counts['failed'].to_i
+  build_status = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}", error: 'failing with an error!'}[payload.status.to_sym]
+  Pony.mail(
+    subject:   "[tddium] #{build_name} is now #{build_status}.",
+    html_body: haml(:email,
+                    format: :html5,
+                    locals: {
+                      session:  payload.session,
+                      commit:   payload.commit_id,
+                      org:      payload.repository['org_name'],
+                      repo:     payload.repository['name'],
+                      payload:  payload_hash.to_yaml
+                    })
+  )
 end
