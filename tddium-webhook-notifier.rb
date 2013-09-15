@@ -19,18 +19,27 @@ Pony.options = {
 DEBUG = ENV['DEBUG'] == 'true'
 
 post '/' do
-  return 403 unless params[:auth_token] == ENV['AUTH_TOKEN']
-  payload_hash = JSON.parse(request.body.read)
-  has_all_keys = %w(xid event status branch repository).all? {|key| payload[key]}
-  unless (payload_hash && has_all_keys)
+  return [401, 'Specify auth_token parameter'  unless params[:auth_token] == ENV['AUTH_TOKEN']
+
+  begin
+    payload_hash = JSON.parse(request.body.read)
+  rescue JSON::ParserError
+    debug "Could not parse as JSON:\n#{request.body.to_s.inspect}"
+    return [400, "Cannot parse body as JSON"]
+  end
+
+  all_keys     = %w(xid event status branch repository)
+  has_all_keys = all_keys.all? {|key| payload_hash[key]}
+  unless has_all_keys
     puts "Error with payload: #{request.body}"
-    return 400
+    return [400, "Must include all keys: #{all_keys * ','}"]
   end
 
   cache   = settings.cache
   payload = OpenStruct.new(payload_hash)
   debug "Received request with payload:\n\n#{payload.to_yaml}"
 
+  debug "Not a 'test' event, doing nothing."
   return 200 unless payload.event == 'test'
 
   hook_key = "hook-#{payload.xid}"
