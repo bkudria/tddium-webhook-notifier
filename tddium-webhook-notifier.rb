@@ -4,8 +4,10 @@ require 'yaml'
 set :cache, Dalli::Client.new
 
 Pony.options = {
-  to:  ENV['NOTIFICATION_EMAIL'],
-  via: :smtp,
+  to:        ENV['NOTIFICATION_EMAIL'],
+  reply_to:  ENV['NOTIFICATION_EMAIL'],
+  from:      "notifier@#{ENV['HEROKU_APP']}.herokuapp.com",
+  via:       :smtp,
   via_options: {
     address:         ENV['MAILGUN_SMTP_SERVER'],
     port:            ENV['MAILGUN_SMTP_PORT'],
