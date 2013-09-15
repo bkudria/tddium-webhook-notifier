@@ -19,7 +19,7 @@ Pony.options = {
 DEBUG = ENV['DEBUG'] == 'true'
 
 post '/' do
-  return [401, 'Specify auth_token parameter'  unless params[:auth_token] == ENV['AUTH_TOKEN']
+  return [401, 'Specify auth_token parameter'] unless params[:auth_token] == ENV['AUTH_TOKEN']
 
   begin
     payload_hash = JSON.parse(request.body.read)
