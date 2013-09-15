@@ -79,7 +79,8 @@ def send_notification!(payload)
   fail_count    = payload.counts['failed'].to_i
   build_status  = {passed: 'passing.', failed: "failing. (#{fail_count} test#{fail_count == 1 ? '' : 's'})", error: 'failing with an error!'}[payload.status.to_sym]
   status_symbol = {passed: '✓', failed: '✘', error: '✱'}[payload.status.to_sym]
-  who_to_notify = payload.comitters.join(', ') || ENV['NOTIFICATION_EMAIL']
+  committers_to = payload.committers.join(', ')
+  who_to_notify = committers_to.empty? ? ENV['NOTIFICATION_EMAIL'] : committers_to
   Pony.mail(
     to:        who_to_notify,
     subject:   "#{status_symbol} #{build_name} is now #{build_status} [tddium]",
