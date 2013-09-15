@@ -1,7 +1,7 @@
 = precede 'Build: ' do
   %a{href: "https://api.tddium.com/reports/#{session}"}> ##{session}
 %br
-= precede 'Commit:' do
+= precede 'Commit: ' do
   %a{href: "https://github.com/#{[org, repo].compact.join('/')}/commit/#{commit}"}>= commit
 
 %p
