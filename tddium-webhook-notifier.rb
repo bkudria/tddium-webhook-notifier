@@ -75,9 +75,9 @@ end
 def send_notification!(payload)
   build_name   = "#{payload.repository['name']}/#{payload.branch}"
   fail_count   = payload.counts['failed'].to_i
-  build_status = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}", error: 'failing with an error!'}[payload.status.to_sym]
+  build_status = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}) :(", error: 'failing with an error!'}[payload.status.to_sym]
   Pony.mail(
-    subject:   "[tddium] #{build_name} is now #{build_status}.",
+    subject:   "[tddium] #{build_name} is now #{build_status}",
     html_body: haml(:email,
                     format: :html5,
                     locals: {
