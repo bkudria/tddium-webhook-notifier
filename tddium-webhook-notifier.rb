@@ -16,6 +16,8 @@ Pony.options = {
   }
 }
 
+DEBUG = ENV['DEBUG'] == 'true'
+
 post '/' do
   payload_hash = JSON.parse(request.body.read)
   has_all_keys = %w(xid event status branch repository).all? {|key| payload[key]}
@@ -26,25 +28,37 @@ post '/' do
 
   cache   = settings.cache
   payload = OpenStruct.new(payload_hash)
+  debug "Received request with payload:\n\n#{payload.to_yaml}"
 
   return 200 unless payload.event == 'test'
 
   hook_key = "hook-#{payload.xid}"
   build_status_key = "build-#{payload.repository['name']}-#{payload.branch}"
 
-  unless cache.get(hook_key) # We haven't already handled this request
+  if cache.get(hook_key) # We've already handled this request
+    puts "Skipping work because we've handled this event (#{hook_key}) before"
+  else
+    debug "Handling event #{hook_key} for the first time"
+
     status = cache.get(build_status_key)
-    if status == payload.status
-      # nothing changed, carry on
+    debug "Stored status for #{build_status_key}: #{status.inspect}"
+    if status == payload.status # nothing changed, carry on
+      debug "Fetched status for #{build_status_key} matches payload status #{payload.status.inspect}"
     else
+      debug "Sending notification and storing new status #{payload.status.inspect}"
       send_notification!(payload)
       cache.set(build_status_key, payload.status)
     end
 
+    debug "Marking event #{hook_key} handled"
     cache.set(hook_key)
   end
 
   return 200
+end
+
+def debug(string)
+  puts string if DEBUG
 end
 
 def send_notification!(payload)
