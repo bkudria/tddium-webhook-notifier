@@ -62,7 +62,7 @@ post '/' do
     end
 
     debug "Marking event #{hook_key} handled"
-    cache.set(hook_key)
+    cache.set(hook_key, true)
   end
 
   return 200
