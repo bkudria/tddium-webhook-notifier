@@ -4,6 +4,8 @@ GEM
     daemons (1.1.9)
     dalli (2.6.4)
     eventmachine (1.0.3)
+    haml (4.0.3)
+      tilt
     json (1.8.0)
     kgio (2.8.1)
     mail (2.5.4)
@@ -35,6 +37,7 @@ PLATFORMS
 
 DEPENDENCIES
   dalli
+  haml
   json
   kgio
   memcachier
