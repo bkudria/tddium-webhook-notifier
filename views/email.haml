@@ -4,8 +4,10 @@
 = precede 'Commit: ' do
   %a{href: "https://github.com/#{[org, repo].compact.join('/')}/commit/#{commit}"}>= commit
 
-%p
-  \--
+
+- if debug
+  %p
+    \--
   %br
   %small
     This email triggered by a webhook with the following payload:

@@ -87,7 +87,8 @@ def send_notification!(payload)
                       commit:   payload.commit_id,
                       org:      payload.repository['org_name'],
                       repo:     payload.repository['name'],
-                      payload:  payload.to_h.to_yaml
+                      payload:  payload.to_h.to_yaml,
+                      debug:    DEBUG
                     })
   )
 end
