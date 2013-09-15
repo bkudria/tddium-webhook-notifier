@@ -11,7 +11,7 @@ Pony.options = {
     port:            ENV['MAILGUN_SMTP_PORT'],
     user_name:       ENV['MAILGUN_SMTP_LOGIN'],
     password:        ENV['MAILGUN_SMTP_PASSWORD'],
-    domain:          "#{ENV['HEROKU_APP']}.heroku.com",
+    domain:          "#{ENV['HEROKU_APP']}.herokuapp.com",
     authentication:  :plain,
   }
 }
