@@ -40,8 +40,8 @@ post '/' do
   payload = OpenStruct.new(payload_hash)
   debug "Received request with payload:\n\n#{payload_hash.to_yaml}"
 
-  if payload.event != 'test'
-    debug "Not a 'test' event, doing nothing."
+  unless %w(stop test).contains? payload.event
+    debug "Not an event we care about, doing nothing."
     return 200
   end
 
