@@ -41,8 +41,9 @@ post '/' do
   payload = OpenStruct.new(payload_hash)
   debug "Received request with payload:\n\n#{payload_hash.to_yaml}"
 
-  unless payload.event == 'test'
+  if payload.event == 'test'
     debug "Not a 'test' event, doing nothing."
+    return 200
   end
 
   hook_key = "hook-#{payload.xid}"
@@ -54,7 +55,7 @@ post '/' do
     debug "Handling event #{hook_key} for the first time"
 
     status = cache.get(build_status_key)
-    debug "Stored status for #{build_status_key}: #{status.inspect}"
+    debug "Cached status for #{build_status_key} is #{status.inspect}"
     if status == payload.status # nothing changed, carry on
       debug "Fetched status for #{build_status_key} matches payload status #{payload.status.inspect}"
     else
