@@ -4,7 +4,6 @@ require 'yaml'
 set :cache, Dalli::Client.new
 
 Pony.options = {
-  to:        ENV['NOTIFICATION_EMAIL'],
   reply_to:  ENV['NOTIFICATION_EMAIL'],
   from:      "Tddium Notifier <notifier@#{ENV['HEROKU_APP']}.herokuapp.com>",
   via:       :smtp,
@@ -80,7 +79,9 @@ def send_notification!(payload)
   fail_count    = payload.counts['failed'].to_i
   build_status  = {passed: 'passing.', failed: "failing. (#{fail_count} test#{fail_count == 1 ? '' : 's'})", error: 'failing with an error!'}[payload.status.to_sym]
   status_symbol = {passed: '✓', failed: '✘', error: '✱'}[payload.status.to_sym]
+  who_to_notify = payload.comitters.join(', ') || ENV['NOTIFICATION_EMAIL']
   Pony.mail(
+    to:        who_to_notify,
     subject:   "#{status_symbol} #{build_name} is now #{build_status} [tddium]",
     html_body: haml(:email,
                     format: :html5,
