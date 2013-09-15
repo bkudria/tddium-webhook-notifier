@@ -19,6 +19,7 @@ Pony.options = {
 DEBUG = ENV['DEBUG'] == 'true'
 
 post '/' do
+  return 403 unless params[:auth_token] == ENV['AUTH_TOKEN']
   payload_hash = JSON.parse(request.body.read)
   has_all_keys = %w(xid event status branch repository).all? {|key| payload[key]}
   unless (payload_hash && has_all_keys)
