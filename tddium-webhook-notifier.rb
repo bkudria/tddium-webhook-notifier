@@ -75,11 +75,12 @@ def debug(string)
 end
 
 def send_notification!(payload)
-  build_name   = "#{payload.repository['name']}/#{payload.branch}"
-  fail_count   = payload.counts['failed'].to_i
-  build_status = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}) :(", error: 'failing with an error!'}[payload.status.to_sym]
+  build_name    = "#{payload.repository['name']}/#{payload.branch}"
+  fail_count    = payload.counts['failed'].to_i
+  build_status  = {passed: 'passing. :)', failed: "failing. (#{fail_count} test#{fail_count != 1 && 's'}) :(", error: 'failing with an error!'}[payload.status.to_sym]
+  status_symbol = {passed: '✓', failed: '✘', error: '✱'}[payload.status.to_sym]
   Pony.mail(
-    subject:   "[tddium] #{build_name} is now #{build_status}",
+    subject:   "#{status_symbol} #{build_name} is now #{build_status} [tddium]",
     html_body: haml(:email,
                     format: :html5,
                     locals: {
