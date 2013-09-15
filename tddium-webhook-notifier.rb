@@ -39,8 +39,9 @@ post '/' do
   payload = OpenStruct.new(payload_hash)
   debug "Received request with payload:\n\n#{payload_hash.to_yaml}"
 
-  debug "Not a 'test' event, doing nothing."
-  return 200 unless payload.event == 'test'
+  unless payload.event == 'test'
+    debug "Not a 'test' event, doing nothing."
+  end
 
   hook_key = "hook-#{payload.xid}"
   build_status_key = "build-#{payload.repository['name']}-#{payload.branch}"
